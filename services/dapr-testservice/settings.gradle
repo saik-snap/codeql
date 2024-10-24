@@ -1,0 +1,14 @@
+rootProject.name = 'dapr-testservice'
+
+includeBuild '../../shared/common-objects'
+includeBuild '../../shared/logging-utils'
+includeBuild '../../shared/archunit-tests'
+
+enableFeaturePreview("VERSION_CATALOGS")
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
+}

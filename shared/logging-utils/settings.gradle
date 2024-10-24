@@ -1,0 +1,10 @@
+enableFeaturePreview("VERSION_CATALOGS")
+rootProject.name = 'logging-utils'
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
+}

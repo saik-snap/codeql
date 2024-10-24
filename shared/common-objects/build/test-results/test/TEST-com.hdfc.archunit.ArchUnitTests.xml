@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hdfc.archunit.ArchUnitTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-05-06T07:11:59" hostname="DESKTOP-SQS9A74" time="2.658">
+  <properties/>
+  <testcase name="only_jackson_and_commons_lang_is_allowed" classname="com.hdfc.archunit.ArchUnitTests" time="2.658"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[[Test worker] INFO com.tngtech.archunit.core.PluginLoader - Detected Java version 17.0.5
+]]></system-err>
+</testsuite>

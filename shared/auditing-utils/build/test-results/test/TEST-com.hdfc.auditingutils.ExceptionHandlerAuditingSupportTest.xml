@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.hdfc.auditingutils.ExceptionHandlerAuditingSupportTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-06-16T05:42:08" hostname="DESKTOP-SQS9A74" time="0.785">
+  <properties/>
+  <testcase name="should_test_method_argument_not_valid_exception()" classname="com.hdfc.auditingutils.ExceptionHandlerAuditingSupportTest" time="0.785"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

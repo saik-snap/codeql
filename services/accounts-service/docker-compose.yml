@@ -1,0 +1,43 @@
+version: '3.8'
+networks:
+  accountsnwk:
+    name: app
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local
+services:
+  accounts-service:
+    image: com.hdfc/accounts-service:0.0.1
+    container_name: accounts-service
+    ports:
+      - "12081:12081"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/accountdb
+      SPRING_DATASOURCE_PASSWORD: ssyKFXTfmxgo
+    networks:
+      - accountsnwk
+    depends_on:
+      - db
+    
+  db:
+    image: postgres:12.6
+    container_name: accountsdb
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - accountsnwk
+    ports:
+      - "16911:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ssyKFXTfmxgo
+      POSTGRES_DB: accountdb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2
+  

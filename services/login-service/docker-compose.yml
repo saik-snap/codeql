@@ -1,0 +1,44 @@
+version: '3.8'
+networks:
+  loginnwk:
+    name: app
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local
+services:
+  login-service:
+    image: com.hdfc/login-service:0.1.0
+    container_name: login-service
+    ports:
+      - "14127:14127"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/loginservicedb
+      SPRING_DATASOURCE_PASSWORD: DRsBilABkMUr
+    networks:
+      - loginnwk
+    depends_on:
+      - db
+    
+  db:
+    image: postgres:12.6
+    container_name: logindb
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - loginnwk
+    ports:
+      - "16618:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: DRsBilABkMUr
+      POSTGRES_DB: loginservicedb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2
+  
+  // 21-04-2023 Added Testpurpose 

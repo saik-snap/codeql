@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/shared/common-objects" name="common-objects">
+                <projects>
+                  <project path="$PROJECT_DIR$/shared/common-objects" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/shared/logging-utils" name="logging-utils">
+                <projects>
+                  <project path="$PROJECT_DIR$/shared/logging-utils" />
+                </projects>
+              </build>
+              <build path="$PROJECT_DIR$/shared/archunit-tests" name="archunit-tests">
+                <projects>
+                  <project path="$PROJECT_DIR$/shared/archunit-tests" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/services/dapr-testservice" />
+        <option name="gradleJvm" value="17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/services/dapr-testservice" />
+            <option value="$PROJECT_DIR$/shared/archunit-tests" />
+            <option value="$PROJECT_DIR$/shared/common-objects" />
+            <option value="$PROJECT_DIR$/shared/logging-utils" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/services/login-service" />
+        <option name="gradleHome" value="$USER_HOME$/Downloads/gradle-7.5-bin/gradle-7.5" />
+        <option name="gradleJvm" value="17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/services/login-service" />
+            <option value="$PROJECT_DIR$/shared/archunit-tests" />
+            <option value="$PROJECT_DIR$/shared/logging-utils" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/shared/event-publisher" name="event-publisher">
+                <projects>
+                  <project path="$PROJECT_DIR$/shared/event-publisher" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/shared/auditing-utils" />
+        <option name="gradleHome" value="$USER_HOME$/Downloads/gradle-7.5-bin/gradle-7.5" />
+        <option name="gradleJvm" value="17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/shared/auditing-utils" />
+            <option value="$PROJECT_DIR$/shared/event-publisher" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/shared/circuit-breaker" />
+        <option name="gradleJvm" value="17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/shared/circuit-breaker" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/shared/common-objects" />
+        <option name="gradleJvm" value="17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/shared/common-objects" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/shared/event-publisher" />
+        <option name="gradleHome" value="$USER_HOME$/Downloads/gradle-7.5-bin/gradle-7.5" />
+        <option name="gradleJvm" value="17" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/shared/event-publisher" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

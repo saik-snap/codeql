@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FeignClientLoggingConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">common-objects</a> &gt; <a href="index.source.html" class="el_package">com.hdfc.config</a> &gt; <span class="el_source">FeignClientLoggingConfig.java</span></div><h1>FeignClientLoggingConfig.java</h1><pre class="source lang-java linenums">package com.hdfc.config;
+
+import feign.Logger;
+import feign.Request;
+import feign.Response;
+import feign.Util;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+
+<span class="nc" id="L11">@Slf4j</span>
+<span class="nc" id="L12">public class FeignClientLoggingConfig extends Logger {</span>
+
+    @Override
+    protected void logRequest(String configKey, Level logLevel, Request request) {
+<span class="nc bnc" id="L16" title="All 2 branches missed.">        byte[] body = request.body() == null ? &quot;&quot;.getBytes() : request.body();</span>
+<span class="nc" id="L17">        log.info(&quot;Through Feign-Logger, Request url : &quot; + request.url()</span>
+<span class="nc" id="L18">                + &quot;, Request Headers : &quot; + request.headers()</span>
+                + &quot;, Request Body : &quot; + new String(body)
+        );
+<span class="nc" id="L21">    }</span>
+
+    @Override
+    protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime)
+            throws IOException {
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        byte[] bodyData = response.body() == null ? &quot;&quot;.getBytes() : Util.toByteArray(response.body().asInputStream());</span>
+<span class="nc" id="L27">        log.info(&quot;Through Feign-Logger, Response Headers : &quot; + response.headers()</span>
+                + &quot;, Response Body : &quot; +  new String(bodyData)
+                + &quot;, Duration in millis : &quot; + elapsedTime
+        );
+<span class="nc" id="L31">        return response.toBuilder().body(bodyData).build();</span>
+    }
+
+    @Override
+    protected void log(String configKey, String format, Object... args) {
+<span class="nc" id="L36">        log.debug(format(configKey, format, args));</span>
+<span class="nc" id="L37">    }</span>
+
+    protected String format(String configKey, String format, Object... args) {
+<span class="nc" id="L40">        return String.format(methodTag(configKey) + format, args);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

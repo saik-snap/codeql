@@ -1,0 +1,12 @@
+rootProject.name = 'login-service'
+
+includeBuild '../../shared/archunit-tests'
+includeBuild '../../shared/logging-utils'
+enableFeaturePreview("VERSION_CATALOGS")
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            from(files("../../gradle/libs.versions.toml"))
+        }
+    }
+}

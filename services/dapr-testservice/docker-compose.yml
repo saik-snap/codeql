@@ -1,0 +1,43 @@
+version: '3.8'
+networks:
+  daprtestservicenwk:
+    name: app
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local
+services:
+  dapr-testservice:
+    image: com.mybank/dapr-testservice:0.1.0
+    container_name: dapr-testservice
+    ports:
+      - "12568:12568"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/daprtestservicedb
+      SPRING_DATASOURCE_PASSWORD: DJtvtklOmhrn
+    networks:
+      - daprtestservicenwk
+    depends_on:
+      - db
+    
+  db:
+    image: postgres:12.6
+    container_name: daprtestservicedb
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - daprtestservicenwk
+    ports:
+      - "17958:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: DJtvtklOmhrn
+      POSTGRES_DB: daprtestservicedb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2
+  

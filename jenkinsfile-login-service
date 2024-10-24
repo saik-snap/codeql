@@ -1,0 +1,57 @@
+pipeline{
+    agent any
+    environment {
+        GRADLE_HOME = "/opt/gradle/gradle-7.4.2"
+        PATH = "${GRADLE_HOME}/bin:${PATH}" 
+        }
+    stages{
+       stage('GetCode'){
+            steps{
+                git credentialsId: 'gitlab', url: 'http://gitlab.snapwork.com/mybank/mybank.git'
+            }
+        }        
+		stage('Gradle Build') {
+			steps {
+			    sh 'ls -l'
+				sh '''cd  services/login-service
+				chmod +x gradlew
+				gradle clean build'''
+			}
+		}
+		stage('SonarQube analysis') {
+           steps {
+             withSonarQubeEnv('sonarqube') {
+                sh '''cd  services/login-service
+               ./gradlew sonar'''
+            }
+        }
+        }
+        stage('Docker') {
+            steps {
+                sh '''cd  services/login-service
+                chmod +x gradlew
+                ./gradlew docker'''
+            }
+        }
+        stage('Pushing to ECR') {
+            steps{  
+                script {
+                    sh '''aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 343192457610.dkr.ecr.ap-south-1.amazonaws.com
+                    docker tag com.mybank-login-service:0.1.0 343192457610.dkr.ecr.ap-south-1.amazonaws.com/poc-images:login-service-${BUILD_NUMBER}
+                    docker push 343192457610.dkr.ecr.ap-south-1.amazonaws.com/poc-images:login-service-${BUILD_NUMBER}'''
+                }
+            }
+        }
+        stage('EKS_K8S_Deploy'){
+            steps{
+                sh '''cd services/login-service
+                kubectl apply -f zipkin.yaml
+                kubectl port-forward  svc/zipkin  9412:9411 &
+                kubectl apply -f configuration-zipkin.yaml
+                chmod +x deploy.sh
+                ./deploy.sh
+                kubectl apply -f service.yaml'''
+            }
+        }
+    }
+}

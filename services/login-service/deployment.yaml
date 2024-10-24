@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-service-deploy
+  labels:
+    name: login-service-deploy
+    app: login-service-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: login-service-pod
+      app: login-service-app
+  template:
+    metadata:
+      name: login-service-pod
+      labels:
+        name: login-service-pod
+        app: login-service-app
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/app-id: "login-service-app"
+        dapr.io/app-port: "14127"
+        dapr.io/enable-api-logging: "true"
+        dapr.io/enable-metrics: "true"
+        dapr.io/metrics-port: "9090"
+        dapr.io/config: "tracing"
+    spec:
+      containers:
+      - name: login-service-container
+        image: 343192457610.dkr.ecr.ap-south-1.amazonaws.com/poc-images:login-service-${IMAGE_TAG}
+        ports:
+        - containerPort: 14127

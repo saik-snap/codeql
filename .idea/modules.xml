@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/auditing-utils.main.iml" filepath="$PROJECT_DIR$/.idea/modules/auditing-utils.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/common-objects.main.iml" filepath="$PROJECT_DIR$/.idea/modules/common-objects.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dapr-testservice.main.iml" filepath="$PROJECT_DIR$/.idea/modules/dapr-testservice.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/event-publisher.main.iml" filepath="$PROJECT_DIR$/.idea/modules/event-publisher.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1741231046/logging-utils.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1741231046/logging-utils.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/mybank.iml" filepath="$PROJECT_DIR$/.idea/mybank.iml" />
+    </modules>
+  </component>
+</project>

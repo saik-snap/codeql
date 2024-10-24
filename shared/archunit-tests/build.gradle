@@ -1,0 +1,40 @@
+plugins {
+    id 'java-library'
+    alias(libs.plugins.sonarqube)
+    id 'jacoco'
+}
+
+group = 'com.hdfc'
+version = '0.1.0'
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly libs.sl4j
+    implementation libs.archunit
+    api libs.archunitApi
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+test.finalizedBy jacocoTestReport
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "failed", "skipped")
+    }
+}

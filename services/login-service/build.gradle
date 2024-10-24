@@ -1,0 +1,95 @@
+plugins {
+    alias(libs.plugins.springBoot)
+    alias(libs.plugins.springDependencyManagement)
+    id 'java'
+    alias(libs.plugins.docker)
+    id 'checkstyle'
+    alias(libs.plugins.sonarqube)
+    id 'jacoco'
+    alias(libs.plugins.gitProperties)
+}
+
+group = 'com.mybank'
+version = '0.1.0'
+//version = '${BUILD_NUMBER}'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+jar {
+    enabled = false
+}
+
+
+configurations.all {
+    exclude module: 'slf4j-simple'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation libs.springDoc
+    implementation libs.logstash
+    implementation libs.jacksonDataformatXml
+    implementation 'com.zaxxer:HikariCP:4.0.3'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+    implementation "com.hdfc:logging-utils"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.hdfc:archunit-tests'
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+test.finalizedBy jacocoTestReport
+
+sonarqube {
+    properties {
+        property 'sonar.exclusions', "**/com/hdfc/login/domain/**,**/com/hdfc/login/config/**,**/com/hdfc/login/repository/**"
+    }
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "failed", "skipped")
+    }
+}
+
+docker {
+    dependsOn bootJar
+    name "${project.group}-${jar.archiveBaseName.get()}:${version}"
+    //name "${project.group}-${jar.archiveBaseName.get()}:${BUILD_NUMBER}"
+    copySpec.from("build/libs").into("libs")
+    dockerfile file('src/main/resources/docker/Dockerfile')
+}
+
+tasks.withType(Checkstyle){
+    configFile file('codequality/checkstyle.xml')
+}
+
+gitProperties {
+    dateFormat = "yyyy-MM-dd'T'HH:mmZ"
+    dateFormatTimeZone = "IST"
+}
+
+springBoot {
+    buildInfo()
+}

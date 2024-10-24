@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoggerBasedEventPublisher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">event-publisher</a> &gt; <a href="index.source.html" class="el_package">com.hdfc.eventpublisher</a> &gt; <span class="el_source">LoggerBasedEventPublisher.java</span></div><h1>LoggerBasedEventPublisher.java</h1><pre class="source lang-java linenums">package com.hdfc.eventpublisher;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hdfc.events.Event;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="nc" id="L12">@Slf4j</span>
+@ConditionalOnProperty(name = &quot;kmb.kafka.event.publisher.enabled&quot;, havingValue = &quot;false&quot;, matchIfMissing = true)
+<span class="nc" id="L14">class LoggerBasedEventPublisher implements EventPublisher {</span>
+    @Autowired
+    ObjectMapper objectMapper;
+
+    @Override
+    public &lt;EventData&gt; void publish(String topic, String key, Event event) {
+<span class="nc" id="L20">        String eventJson = null;</span>
+        try {
+<span class="nc" id="L22">            eventJson = objectMapper.writeValueAsString(event);</span>
+<span class="nc" id="L23">        } catch (JsonProcessingException e) {</span>
+<span class="nc" id="L24">            log.info(&quot;EventData Json-parsing error&quot;);</span>
+<span class="nc" id="L25">        }</span>
+<span class="nc" id="L26">        log.info(&quot;Publishing event {} with key {} to topic {}&quot;, eventJson, key, topic);</span>
+<span class="nc" id="L27">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

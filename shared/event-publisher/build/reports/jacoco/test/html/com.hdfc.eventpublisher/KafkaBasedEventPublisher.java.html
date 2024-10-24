@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KafkaBasedEventPublisher.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">event-publisher</a> &gt; <a href="index.source.html" class="el_package">com.hdfc.eventpublisher</a> &gt; <span class="el_source">KafkaBasedEventPublisher.java</span></div><h1>KafkaBasedEventPublisher.java</h1><pre class="source lang-java linenums">package com.hdfc.eventpublisher;
+
+import com.hdfc.events.Event;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
+
+@Component
+<span class="fc" id="L13">@Slf4j</span>
+@ConditionalOnProperty(name = &quot;kmb.kafka.event.publisher.enabled&quot;, havingValue = &quot;true&quot;)
+<span class="fc" id="L15">class KafkaBasedEventPublisher implements EventPublisher {</span>
+
+    @Autowired
+    private KafkaTemplate&lt;String, Event&gt; kafkaTemplate;
+
+    @Override
+    public  void publish(String topic, String key, Event event) {
+        try {
+<span class="fc" id="L23">            String eventId = event.getId();</span>
+<span class="fc" id="L24">            log.info(&quot;Sending event [id={},key={},topic={}]&quot;, eventId, key, topic);</span>
+            ListenableFuture&lt;SendResult&lt;String, Event&gt;&gt; future;
+<span class="fc bfc" id="L26" title="All 2 branches covered.">            if (key == null) {</span>
+<span class="nc" id="L27">                future = this.kafkaTemplate.send(topic, event);</span>
+            } else {
+<span class="fc" id="L29">                future = this.kafkaTemplate.send(topic, key, event);</span>
+            }
+<span class="fc" id="L31">            future.addCallback(</span>
+<span class="fc" id="L32">                    (result) -&gt; log.info(&quot;Received success response for event with id {} to topic {}. Response is {}&quot;,</span>
+                            eventId, topic, result),
+<span class="nc" id="L34">                    (exception) -&gt; log.error(&quot;Received failure when sending event with id {} to topic {}. Exception &quot; +</span>
+                                    &quot;is {}&quot;,
+<span class="nc" id="L36">                            eventId, topic, exception.getMessage(), exception));</span>
+
+<span class="fc" id="L38">            log.info(&quot;Sent event with id {} to topic {}&quot;, eventId, topic);</span>
+<span class="fc" id="L39">        } catch (Exception e) {</span>
+<span class="fc" id="L40">            String message = e.getMessage();</span>
+<span class="fc" id="L41">            log.error(&quot;Exception while writing event {} to Kafka. Exception message {}&quot;, event.getId(), message, e);</span>
+<span class="fc" id="L42">        }</span>
+<span class="fc" id="L43">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>

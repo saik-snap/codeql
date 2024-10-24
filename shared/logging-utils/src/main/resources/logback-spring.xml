@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty name="service" source="spring.application.name"/>
+
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="com.hdfc.logging.patternlayout.MaskingPatternLayout">
+                <maskPattern>\"pin\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"password\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"card_num\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"exp_date\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"cvv\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"card_pin\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"current_pin\"\s*:\s*\"(.*?)\"</maskPattern>
+                <maskPattern>\"new_pin\"\s*:\s*\"(.*?)\"</maskPattern>
+                <pattern>
+                    { "@timestamp":"%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}", "clientIpAddress":"%X{clientIpAddress}", "service": "${service}", "requestUri":"%X{requestUri}", "correlationId":"%X{correlationId}", "class": "%logger{40}", "customerId": "%X{customerId}", "persona": "%X{persona}", "appId": "%X{appId}", "deviceId": "%X{deviceId}", "device": "%X{device}", "mobileNo": "%X{mobileNo}", "thread": "%thread", "level": "%level", "message": "%message %ex" } \n
+                </pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>

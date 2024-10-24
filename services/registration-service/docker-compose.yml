@@ -1,0 +1,43 @@
+version: '3.8'
+networks:
+  registrationnwk:
+    name: app
+    driver: bridge
+volumes:
+  postgres_data:
+    driver: local
+services:
+  registration-service:
+    image: com.mybank/registration-service:0.1.0
+    container_name: registration-service
+    ports:
+      - "11847:11847"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/registrationservicedb
+      SPRING_DATASOURCE_PASSWORD: lUlZMYSCaFbE
+    networks:
+      - registrationnwk
+    depends_on:
+      - db
+    
+  db:
+    image: postgres:12.6
+    container_name: registrationdb
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - registrationnwk
+    ports:
+      - "17740:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: lUlZMYSCaFbE
+      POSTGRES_DB: registrationservicedb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 1m
+      timeout: 10s
+      retries: 2
+  

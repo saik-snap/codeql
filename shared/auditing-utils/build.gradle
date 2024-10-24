@@ -1,0 +1,63 @@
+plugins {
+    alias(libs.plugins.springDependencyManagement)
+    id 'java-library'
+    alias(libs.plugins.sonarqube)
+    id 'jacoco'
+}
+
+group = 'com.hdfc'
+version = '0.1.0'
+
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(libs.versions.java.get())
+    }
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation platform(libs.spring)
+    implementation platform(libs.jackson)
+    compileOnly libs.sl4j
+    compileOnly libs.servlet
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.springframework:spring-context'
+    implementation 'org.springframework:spring-web'
+    implementation 'org.springframework:spring-aop'
+    compileOnly libs.springAutoConfigure
+    implementation libs.bundles.aopDeps
+
+    implementation "com.hdfc:event-publisher"
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+    testImplementation libs.junitApi
+    testRuntimeOnly libs.junitEngine
+    testImplementation libs.sl4jSimple
+    testImplementation libs.assertj
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+test.finalizedBy jacocoTestReport
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "failed", "skipped")
+    }
+}
+
+sonarqube {
+    properties {
+        property 'sonar.exclusions', "com/hdfc/auditingutils/ExceptionHandlerAuditingSupport.java"
+    }
+}

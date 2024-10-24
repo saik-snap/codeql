@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KafkaEventPublisherConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">event-publisher</a> &gt; <a href="index.source.html" class="el_package">com.hdfc.eventpublisher</a> &gt; <span class="el_source">KafkaEventPublisherConfig.java</span></div><h1>KafkaEventPublisherConfig.java</h1><pre class="source lang-java linenums">package com.hdfc.eventpublisher;
+
+import com.hdfc.events.Event;
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.SslConfigs;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
+
+@Configuration
+@PropertySource(&quot;classpath:/event-publisher.properties&quot;)
+@EnableAsync
+@ConditionalOnProperty(name = &quot;kmb.kafka.event.publisher.enabled&quot;, havingValue = &quot;true&quot;)
+<span class="fc" id="L30">public class KafkaEventPublisherConfig {</span>
+
+    @Value(&quot;${spring.kafka.producer.bootstrap-servers}&quot;)
+    private String bootstrapServers;
+    @Value(&quot;${spring.kafka.producer.properties.max.block.ms}&quot;)
+    private int maxBlockMs;
+    @Value(&quot;${spring.kafka.ssl.trust-store-location}&quot;)
+    private String trustStoreLocation;
+    @Value(&quot;${spring.kafka.producer.security.protocol}&quot;)
+    private String protocol;
+
+    @Value(&quot;${spring.kafka.thread-pool.core.size}&quot;)
+    private int kafkaThreadPoolCoreSize;
+
+    @Value(&quot;${spring.kafka.thread-pool.max.size}&quot;)
+    private int kafkaThreadPoolMaxSize;
+
+    @Value(&quot;${spring.kafka.thread-pool.queue.size}&quot;)
+    private int kafkaThreadPoolQueueSize;
+
+    @Bean(name = &quot;eventPublisherThreadExecutor&quot;)
+    public Executor threadPoolTaskExecutor() {
+<span class="nc" id="L52">        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();</span>
+<span class="nc" id="L53">        executor.setCorePoolSize(kafkaThreadPoolCoreSize);</span>
+<span class="nc" id="L54">        executor.setMaxPoolSize(kafkaThreadPoolMaxSize);</span>
+<span class="nc" id="L55">        executor.setQueueCapacity(kafkaThreadPoolQueueSize);</span>
+<span class="nc" id="L56">        executor.setThreadNamePrefix(&quot;EventPublisher-&quot;);</span>
+<span class="nc" id="L57">        executor.setTaskDecorator(runnable -&gt; {</span>
+<span class="nc" id="L58">            Map&lt;String, String&gt; copy = MDC.getCopyOfContextMap();</span>
+<span class="nc" id="L59">            return () -&gt; {</span>
+                try {
+<span class="nc" id="L61">                    MDC.setContextMap(copy);</span>
+<span class="nc" id="L62">                    runnable.run();</span>
+                } finally {
+<span class="nc" id="L64">                    MDC.clear();</span>
+                }
+<span class="nc" id="L66">            };</span>
+        });
+<span class="nc" id="L68">        return executor;</span>
+    }
+
+    @Bean
+    public ProducerFactory&lt;String, Event&gt; producerFactory() {
+<span class="fc" id="L73">        return new DefaultKafkaProducerFactory&lt;&gt;(producerConfigs());</span>
+    }
+
+    @Bean
+    @Profile(&quot;!test&quot;)
+    public Map&lt;String, Object&gt; producerConfigs() {
+<span class="nc" id="L79">        Map&lt;String, Object&gt; props = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L80">        props.put(</span>
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+<span class="nc" id="L82">        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);</span>
+<span class="nc" id="L83">        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);</span>
+<span class="nc" id="L84">        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, maxBlockMs);</span>
+<span class="nc" id="L85">        props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, protocol);</span>
+<span class="nc" id="L86">        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, trustStoreLocation);</span>
+<span class="nc" id="L87">        return props;</span>
+    }
+
+    @Bean
+    public KafkaTemplate&lt;String, Event&gt; kafkaTemplate() {
+<span class="fc" id="L92">        return new KafkaTemplate&lt;&gt;(producerFactory());</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.7.202105040129</span></div></body></html>
